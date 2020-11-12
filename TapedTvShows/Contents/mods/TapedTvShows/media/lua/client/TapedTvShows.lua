@@ -75,7 +75,9 @@ TapedTvShows.createMenu = function(playerIndex, context, worldObjects)
         end
       end
 
-      --TapedTvShows.addDebugMenuOptions(subMenu, player, isoTelevision) -- debug options
+      if getDebug() then
+        TapedTvShows.addDebugMenuOptions(subMenu, player, isoTelevision) -- debug options
+      end
       
       if subMenu.numOptions > 1 then -- I don't know why this is off by one
         context:addSubMenu(context:addOption(getText("ContextMenu_VCR_Menu"), worldobjects, nil), subMenu)
@@ -186,7 +188,7 @@ TapedTvShows.retrieveBroadCast = function (broadcastUuid)
 end
 
 TapedTvShows.onDebugSpawnTape = function (worldobjects, player, tv)
-  local n = ZombRand(25 + 1) -- [0..2]
+  local n = ZombRand(25) + 1 -- [1..25]
   print("DEBUG: Spawning tape ", n)
   player:getInventory():AddItem("TapedTvShows.VideoTape" .. n)
 end
@@ -207,7 +209,7 @@ end
 TapedTvShows.addDebugMenuOptions = function (menu, player, isoTelevision)
   local modData = isoTelevision:getModData()
   
-  menu:addOption("DEBUG: PLAY A SHOW", worldObjects, TapedTvShows.onDebugPlayShow, player, isoTelevision)
+  --menu:addOption("DEBUG: PLAY A SHOW", worldObjects, TapedTvShows.onDebugPlayShow, player, isoTelevision)
   menu:addOption("DEBUG: Spawn Video Tape", worldObjects, TapedTvShows.onDebugSpawnTape, player, isoTelevision)
   
   local tmp = menu:addOption("DEBUG: IsoTelevision.modData")
@@ -266,4 +268,13 @@ TapedTvShows.getVhsChannel = function (isoTelevision)
   return channel
 end
 
+TapedTvShows.TapeMappingContains = function (key)
+  for _, v in pairs(TapedTvShows.TapeMapping) do
+    if v == key then
+      return true
+    end
+  end
+  
+  return false
+end
 Events.OnFillWorldObjectContextMenu.Add(TapedTvShows.createMenu)

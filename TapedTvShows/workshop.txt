@@ -1,4 +1,4 @@
-version=1
+version=3
 id=2284317690
 title=Taped TV shows
 description=If you're tired of starting out games as a couch potato, always near a TV to not miss those juicy XP points, then this may be the mod you're looking for!
