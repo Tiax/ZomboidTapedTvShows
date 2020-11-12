@@ -7,6 +7,6 @@ description=Video tapes of your favourite 25 TV show episodes can now be randoml
 description=
 description=In new games, you will only gain the XP points for watching a show for the first time. In existing games, you'll gain the XP again, even when you've already seen the show during its regular broadcast time (before the mod was installed). The vanilla game does unfortunately not keep track of what you watched already, so that's a thing you can chose yourself whether to exploit or not.
 description=
-description=Compatibility notes: Created and tested on IWBUMS build 41.45. May conflict with other mods overriding ISRadioInteractions.OnDeviceText.
+description=Compatibility notes: Created and tested on IWBUMS build 41.45. May conflict with other mods overriding ISRadioInteractions.
 tags=
 visibility=public
