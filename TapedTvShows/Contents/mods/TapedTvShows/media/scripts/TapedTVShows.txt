@@ -1,0 +1,231 @@
+module TapedTvShows
+{
+  imports {
+    Base
+  }
+  
+  item VideoTape1  {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Orange,
+    DisplayName = VHS Tape: Exposure Survival Ep1,
+    //ToolTip = Exposure Survival,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape2  {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Blue,
+    DisplayName = VHS Tape: Cook Show Ep1,
+    //ToolTip = Cookshow,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape3  {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Green,
+    DisplayName = VHS Tape: Woodcraft Ep1,
+    //ToolTip = Woodcraft,
+    Tags = VHS;Video,
+  }
+    
+  item VideoTape4  {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Orange,
+    DisplayName = VHS Tape: Exposure Survival Ep2,
+    //ToolTip = Exposure Survival,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape5  {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Blue,
+    DisplayName = VHS Tape: Cook Show Ep2,
+    //ToolTip = Cookshow,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape6  {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Green,
+    DisplayName = VHS Tape: Woodcraft Ep2,
+    //ToolTip = Woodcraft,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape7  {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Orange,
+    DisplayName = VHS Tape: Exposure Survival Ep3,
+    //ToolTip = Exposure Survival,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape8  {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Blue,
+    DisplayName = VHS Tape: Cook Show Ep3,
+    //ToolTip = Cook Show,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape9  {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Green,
+    DisplayName = VHS Tape: Woodcraft Ep3,
+    //ToolTip = Woodcraft,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape10 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Orange,
+    DisplayName = VHS Tape: Exposure Survival Ep4,
+    //ToolTip =  Exposure Survival,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape11 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Blue,
+    DisplayName = VHS Tape: Cook Show Ep4,
+    //ToolTip = Cook Show,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape12 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Green,
+    DisplayName = VHS Tape: Woodcraft Ep4,
+    //ToolTip = Woodcraft,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape13 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Orange,
+    DisplayName = VHS Tape: Exposure Survival Ep5,
+    //ToolTip = Exposure Survival,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape14 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Blue,
+    DisplayName = VHS Tape: Cook Show Ep5,
+    //ToolTip = Cook Show,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape15 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Green,
+    DisplayName = VHS Tape: Woodcraft Ep5,
+    //ToolTip = Woodcraft,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape16 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Orange,
+    DisplayName = VHS Tape: Exposure Survival Ep6,
+    //ToolTip = Exposure Survival,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape17 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Blue,
+    DisplayName = VHS Tape: Cook Show Ep6,
+    //ToolTip = Cook Show,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape18 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Green,
+    DisplayName = VHS Tape: Woodcraft Ep6,
+    //ToolTip = Woodcraft,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape19 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Orange,
+    DisplayName = VHS Tape: Exposure Survival Ep7,
+    //ToolTip = Exposure Survival
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape20 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Blue,
+    DisplayName = VHS Tape: Cook Show Ep7,
+    //ToolTip = Cook show,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape21 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Green,
+    DisplayName = VHS Tape: Woodcraft Ep7,
+    //ToolTip = Woodcraft,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape22 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Orange,
+    DisplayName = VHS Tape: Exposure Survival Ep8,
+    //ToolTip = Exposure Survival,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape23 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Blue,
+    DisplayName = VHS Tape: Cook Show Ep8,
+    //ToolTip = Cook Show,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape24 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Orange,
+    DisplayName = VHS Tape: Exposure Survival Ep9,
+    //ToolTip = Exposure Survival,
+    Tags = VHS;Video,
+  }
+  
+  item VideoTape25 {
+    Weight = 0.3,
+    Type = Normal,
+    Icon = VhsTape_Blue,
+    DisplayName = VHS Tape: Cook Show Ep9,
+    //ToolTip = Cook Show,
+    Tags = VHS;Video,
+  }
+}
