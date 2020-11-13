@@ -1,8 +1,8 @@
 -- see media\lua\server\Items\Distributions.lua
 
 local function insertTvShowTapes(items)
-  local chance_corpse = 0.05
-  local chance_other = 1
+  local chance_corpse = 0.005
+  local chance_other = 0.1
 
   for i=1, #items, 2 do
     local itemName = items[i]
@@ -22,7 +22,7 @@ local function insertTvShowTapes(items)
   end
 end
 
-print("Inserting video tapes into loot tables...")
+--print("Inserting video tapes into loot tables...")
 
 for k1,v1 in pairs(SuburbsDistributions) do
   local items = v1["items"]
