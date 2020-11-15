@@ -1,0 +1,21 @@
+module TapedTvShows
+{
+  imports {
+    Base
+  }
+
+  recipe Dismantle Video Tape
+  {
+    [Recipe.GetItemTypes.DismantleVideoTape],
+    keep [Recipe.GetItemTypes.Screwdriver],
+    
+    Result:ElectronicsScrap=1,
+    Time:60.0,
+    Category:Electrical,
+    AnimNode:Disassemble,
+    Prop1:Screwdriver,
+    Prop2:CDplayer,
+    OnGiveXP:Recipe.OnGiveXP.DismantleElectronics,
+    //OnCreate:Recipe.OnCreate.DismantleVideoTape
+  }
+}
