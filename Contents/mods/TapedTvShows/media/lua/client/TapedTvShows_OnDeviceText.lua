@@ -5,6 +5,9 @@ TapedTvShows.playerOnDeviceText = function (player, _interactCodes, _x, _y, _z, 
   -- these are the same checks as ISRadioInteractions.checkPlayer
   local src = (not (_x==-1 and _y==-1 and _z==-1)) and getCell():getGridSquare(_x,_y,_z) or nil;
   local plrsquare = player:getSquare();
+  
+  --print(string.format("TapedTvShows.playerOnDeviceText player[%s] codes[%q]", tostring(player), _interactCodes))
+  
   if src and src:isOutside() ~= plrsquare:isOutside() then
       return _interactCodes;
   end
@@ -18,7 +21,6 @@ TapedTvShows.playerOnDeviceText = function (player, _interactCodes, _x, _y, _z, 
     return _interactCodes
   end
   
-  local seen = false -- has the player seen this line?
   local playerModData = player:getModData()
 
   local deviceData = source:getDeviceData()
@@ -73,18 +75,20 @@ end
 
 TapedTvShows.OnDeviceText = function (_interactCodes, _x, _y, _z, _line, source)
   -- mimic the original implementation, as we need to pass the source param:
-  local radioInteractions = ISRadioInteractions:getInstance()
-  
   if _interactCodes ~= nil and _interactCodes:len() > 0 and _line ~=nil then
+    local radioInteractions = ISRadioInteractions:getInstance()
+    
     for playerNum=1, 4 do
       local player = getSpecificPlayer(playerNum-1)
       
       if player and player:isDead() then 
-        player = nil 
+        player = nil
       end
 
       if player ~=nil and ((_x==-1 and _y==-1 and _z==-1) or radioInteractions.playerInRange(player, _x, _y, _z)) then
-        -- but instead we call our own function (may change the _interactCodes):
+        -- but instead we call our own function (which may change the _interactCodes):
+        --print(string.format("TapedTvShows.OnDeviceText player[%s] _interactCodes[%q] _line[%q] source[%q]", tostring(player:getPlayerNum()), tostring(_interactCodes), tostring(_line), tostring(source)))
+        
         _interactCodes = TapedTvShows.playerOnDeviceText(player, _interactCodes, _x, _y, _z, _line, source)
         
         -- and then we call the original implementation (grants original or changed stats)
