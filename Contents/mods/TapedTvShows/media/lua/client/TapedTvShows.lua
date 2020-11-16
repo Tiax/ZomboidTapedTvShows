@@ -224,7 +224,7 @@ TapedTvShows.retrieveBroadCast = function (broadcastUuid)
     local bc = broadcastList:get(i)
     
     if bc:getID() == broadcastUuid then
-      origBc = v
+      origBc = bc
       break;
     end
   end
