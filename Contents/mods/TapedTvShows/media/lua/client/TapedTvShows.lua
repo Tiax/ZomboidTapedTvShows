@@ -1,7 +1,7 @@
 -- TapedTvShows.lua
 -- TODO: prevent tapes from getting deleted, when tv is picked up
 
-TapedTvShows = {}
+TapedTvShows = TapedTvShows or {};
 
 TapedTvShows.TapeMapping = {
   ["VideoTape1"]  = "465ef67d-21a8-4c22-a6f4-257eea64e8a3", -- Exposure Survival, day 0
@@ -76,7 +76,7 @@ TapedTvShows.createMenu = function(playerIndex, context, worldObjects, test)
     return
   end
   
-  if modData["VhsTapeItem"] then
+  if modData["VhsTapeItem"] or (modData["movableData"] and modData["movableData"]["VhsTapeItem"]) then
     -- TV has a tape in it -> Eject option
     subMenu:addOption(getText("ContextMenu_VCR_EjectVideoTape"), worldObjects, TapedTvShows.onEjectTape, player, isoTelevision)
   else
@@ -136,7 +136,13 @@ TapedTvShows.playBroadCastFromTape = function (player, isoTelevision, tapeItem)
   
   -- store the tape "in" the IsoTelevision
   local modData = isoTelevision:getModData()
-  modData["VhsTapeItem"] = tostring(tapeItem:getFullType())
+  
+  if modData["movableData"] == nil then
+    modData["movableData"] = {}
+  end
+  
+  --modData["VhsTapeItem"] = tostring(tapeItem:getFullType())
+  modData["movableData"]["VhsTapeItem"] = tostring(tapeItem:getFullType())
   
   -- retrieve TV's "VHS channel", switch to it and play tape "as broadcast"
   local uuid = TapedTvShows.getBroadCastUuidForTape(tapeItem)
@@ -176,12 +182,24 @@ TapedTvShows.stopBroadCastEjectTape = function (player, isoTelevision)
 
   -- return the tape to the player and remove it from the TV
   local modData = isoTelevision:getModData()
-  
-  if modData["VhsTapeItem"] then
-    local tapeItem = isoTelevision:getModData()["VhsTapeItem"]
+
+  if modData["VhsTapeItem"] or (modData["movableData"] and modData["movableData"]["VhsTapeItem"]) then
+    local tapeItem = modData["VhsTapeItem"] -- legacy key
+    
+    if tapeItem == nil then
+      tapeItem = modData["movableData"]["VhsTapeItem"] -- new key in movableData
+    end
+    
     player:getInventory():AddItem(tapeItem)
     player:getInventory():setDrawDirty(true)
-    isoTelevision:getModData()["VhsTapeItem"] = nil
+    
+    modData["VhsTapeItem"] = nil
+    
+    if modData["movableData"] ~= nil then
+      --modData["movableData"] = {}
+      modData["movableData"]["VhsTapeItem"] = nil
+    end
+
   end
 end
 
@@ -198,8 +216,17 @@ end
 TapedTvShows.retrieveBroadCast = function (broadcastUuid)
   local channel = TapedTvShows.getLifeAndLivingChannel();
   local script = channel:getRadioScript("main")
-  local bc = script:getBroadcastWithID(broadcastUuid)
+  local origbc = script:getBroadcastWithID(broadcastUuid)
   
+  -- we need to clone the broadcast here to avoid any unwanted behavior from altering the existing shows
+  local bc = RadioBroadCast.new(origbc:getID(), -1, -1);
+  local origLines = origbc:getLines()
+  
+  for i = 0, origLines:size() - 1 do
+    local line = origLines:get(i)
+    bc:AddRadioLine(RadioLine.new(line:getText(), line:getR(), line:getG(), line:getB(), line:getEffectsString()))
+  end
+
   bc:setPreSegment(nil)
   bc:setPostSegment(nil)
   bc:resetLineCounter()

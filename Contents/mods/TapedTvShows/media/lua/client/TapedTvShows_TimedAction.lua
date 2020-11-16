@@ -1,5 +1,5 @@
 require "TimedActions/ISBaseTimedAction"
-
+TapedTvShows = TapedTvShows or {};
 ISInsertVideoTape = ISBaseTimedAction:derive("ISInsertVideoTape");
 
 function ISInsertVideoTape:new(character, tv, tape)

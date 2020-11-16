@@ -1,5 +1,6 @@
 -- Overwrite the ISRadioInteractions.OnDeviceText implementation, so we can limit XP gain
 --local originalISRadioInteractionsOnDeviceText = radioInteractions.OnDeviceText
+TapedTvShows = TapedTvShows or {};
 
 TapedTvShows.playerOnDeviceText = function (player, _interactCodes, _x, _y, _z, _line, source)
   -- these are the same checks as ISRadioInteractions.checkPlayer
@@ -76,9 +77,8 @@ end
 TapedTvShows.OnDeviceText = function (_interactCodes, _x, _y, _z, _line, source)
   -- mimic the original implementation, as we need to pass the source param:
   if _interactCodes ~= nil and _interactCodes:len() > 0 and _line ~=nil then
-    local radioInteractions = ISRadioInteractions:getInstance()
-    
     for playerNum=1, 4 do
+      local radioInteractions = ISRadioInteractions:getInstance()
       local player = getSpecificPlayer(playerNum-1)
       
       if player and player:isDead() then 
