@@ -221,7 +221,7 @@ TapedTvShows.retrieveBroadCast = function (broadcastUuid)
   local origBc = nil -- Note: script:getBroadcastWithID() does some other stuff we don't want
   
   for i = 0, broadcastList:size() - 1 do
-    local bc = broadcastList.get(i)
+    local bc = broadcastList:get(i)
     
     if bc:getID() == broadcastUuid then
       origBc = v
