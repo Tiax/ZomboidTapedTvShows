@@ -1,6 +1,4 @@
 -- TapedTvShows.lua
--- TODO: prevent tapes from getting deleted, when tv is picked up
-
 TapedTvShows = TapedTvShows or {};
 
 TapedTvShows.TapeMapping = {
@@ -34,12 +32,12 @@ TapedTvShows.TapeMapping = {
 TapedTvShows.LifeAndLivingFreq = 203 -- Life and Living TV
 
 -- contextmenu on a telly, let's offer playing tapes!
-TapedTvShows.createMenu = function(playerIndex, context, worldObjects, test)
+TapedTvShows.createVcrPlayerMenu = function(playerIndex, context, worldObjects, test)
   if test and ISWorldObjectContextMenu.Test then 
     return true 
   end
   
-  --print(string.format("TapedTvShows.createMenu player[%d] worldObject[%q] test[%s]", playerIndex, tostring(v), tostring(test)))
+  --print(string.format("TapedTvShows.createVcrPlayerMenu player[%d] worldObject[%q] test[%s]", playerIndex, tostring(v), tostring(test)))
   
   local isoTelevision = nil
   
@@ -216,20 +214,37 @@ end
 TapedTvShows.retrieveBroadCast = function (broadcastUuid)
   local channel = TapedTvShows.getLifeAndLivingChannel();
   local script = channel:getRadioScript("main")
-  local origbc = script:getBroadcastWithID(broadcastUuid)
   
   -- we need to clone the broadcast here to avoid any unwanted behavior from altering the existing shows
-  local bc = RadioBroadCast.new(origbc:getID(), -1, -1);
-  local origLines = origbc:getLines()
+  -- first, grab the original BC from the RadioScript
+  local broadcastList = script:getBroadcastList() -- ArrayList<RadioBroadCast>
+  local origBc = nil -- Note: script:getBroadcastWithID() does some other stuff we don't want
+  
+  for i = 0, broadcastList:size() - 1 do
+    local bc = broadcastList.get(i)
+    
+    if bc:getID() == broadcastUuid then
+      origBc = v
+      break;
+    end
+  end
+  
+  if not origBc then
+    return nil -- could not find broadcast?
+  end
+  
+  -- now create a new RadioBroadCast with the same properties
+  local bc = RadioBroadCast.new(origBc:getID(), -1, -1);
+  local origLines = origBc:getLines()
   
   for i = 0, origLines:size() - 1 do
     local line = origLines:get(i)
     bc:AddRadioLine(RadioLine.new(line:getText(), line:getR(), line:getG(), line:getB(), line:getEffectsString()))
   end
 
-  bc:setPreSegment(nil)
-  bc:setPostSegment(nil)
-  bc:resetLineCounter()
+  --bc:setPreSegment(nil)
+  --bc:setPostSegment(nil)
+  --bc:resetLineCounter()
   
   return bc
 end
@@ -325,4 +340,4 @@ TapedTvShows.TapeMappingContains = function (key)
   return false
 end
 
-Events.OnFillWorldObjectContextMenu.Add(TapedTvShows.createMenu)
+Events.OnFillWorldObjectContextMenu.Add(TapedTvShows.createVcrPlayerMenu)

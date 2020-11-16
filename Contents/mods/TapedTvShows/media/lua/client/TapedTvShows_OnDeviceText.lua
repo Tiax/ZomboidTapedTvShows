@@ -1,5 +1,4 @@
 -- Overwrite the ISRadioInteractions.OnDeviceText implementation, so we can limit XP gain
---local originalISRadioInteractionsOnDeviceText = radioInteractions.OnDeviceText
 TapedTvShows = TapedTvShows or {};
 
 TapedTvShows.playerOnDeviceText = function (player, _interactCodes, _x, _y, _z, _line, source)
