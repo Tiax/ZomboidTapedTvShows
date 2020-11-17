@@ -1,0 +1,7 @@
+ContextMenu_RU = {
+  ContextMenu_VCR_Menu = "Видео проигрыватель",
+  ContextMenu_VCR_EjectVideoTape = "Извлечь кассету",
+  ContextMenu_VCR_InsertVideoTape = "Вставить: %1",
+  ContextMenu_VCR_InsertVideoTape_ToolTip_Title = "%1",
+  ContextMenu_VCR_InsertVideoTape_ToolTip_Text = "Смотреть кассету.",
+}
