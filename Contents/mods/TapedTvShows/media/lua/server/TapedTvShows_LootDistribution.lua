@@ -1,6 +1,124 @@
 -- see media\lua\server\Items\Distributions.lua
-local insertByItemName = {}
-local insertByTableName = {}
+Distributions = Distributions or {}
+
+local distributionTable = {
+  -- will be populated dynamically from the loot.ini config file
+}
+
+local function lootTableContains(tbl, item)
+  if type(tbl) ~= "table" then
+    return false -- not a table...
+  end
+
+  for i=1, #tbl, 2 do
+    if tbl[i] and tostring(tbl[i]) == tostring(item) then
+      return true
+    end
+  end
+
+  return false
+end
+
+local function insertAllTvShowTapes(tbl, chance)
+  for n=1, 25 do
+    table.insert(tbl, "TapedTvShows.VideoTape" .. n)
+    table.insert(tbl, tonumber(chance))
+  end
+end
+
+local function insertByDottedKey(key, chance)
+  local parts
+
+  if type(key) == "table" then
+    parts = key -- key is a table of parts
+  else -- assume string: key is a dot delimited string, let's split it into parts
+    parts = {}
+    for part in key:gmatch("[^.]+") do
+      table.insert(parts, part)
+    end
+  end
+
+  local node = distributionTable -- start at root node
+
+  -- make sure all the sub tables exist, before trying to add stuff to the leaf node
+  for i, part in ipairs(parts) do
+    if node[part] == nil then
+      node[part] = {}
+    end
+
+    node = node[part]
+  end
+
+  -- all sub tables created -> we can start inserting our stuff
+  insertAllTvShowTapes(node, chance)
+end
+
+local function insertByItemName(itemName, chance)
+  -- go through the base game's SuburbsDistributions and look for a key item "itemName"
+  -- construct a "dotted key" of the loot table, if found
+  for k1, v1 in pairs(SuburbsDistributions) do
+    local parts = { k1 } -- e.g. "conveniencestore", "Bag_WeaponBag", ...
+    
+    if v1["items"] ~= nil or v1["junk"] ~= nil then
+      -- items directly on first level, usually a bag, e.g. "Bag_WeaponBag.items"
+      local found = nil
+
+      if lootTableContains(v1["items"], itemName) then
+        found = "items"
+      elseif lootTableContains(v1["junk"], itemName) then
+        found = "junk"
+      end
+
+      if found then
+        table.insert(parts, found) -- "items" or "junk"
+
+        if getDebug() then 
+          print(string.format("[TapedTvShows] Inserting tapes into loot table \"%s\" by key item \"%s\" with chance %f ...", table.concat(parts, "."), itemName, chance)) 
+        end
+
+        insertByDottedKey(parts, chance)
+      end
+    else
+      -- items on second level, e.g. "conveniencestore.freezer.items"
+      -- check in each sub table:
+      for k2, v2 in pairs(v1) do
+        table.insert(parts, k2) -- e.g. "freezer"
+
+        if lootTableContains(v2["items"], itemName) then
+          table.insert(parts, "items")
+        elseif v2["junk"] ~= nil and lootTableContains(v2["junk"]["items"], itemName) then
+          table.insert(parts, "junk")
+          table.insert(parts, "items")
+        end
+
+        if #parts > 2 then -- more than 2 levels - we got a match something
+          if getDebug() then 
+            print(string.format("[TapedTvShows] Inserting into loot table \"%s\" by key item \"%s\" with chance %f ...", table.concat(parts, "."), itemName, chance)) 
+          end
+
+          insertByDottedKey(parts, chance)
+
+          while #parts > 2 do
+            table.remove(parts)
+          end
+        end
+
+        table.remove(parts) -- k2
+      end
+    end
+  end
+end
+
+local function insertByTableName(key, chance)
+  if (key:sub(-6) ~= ".items") then
+    -- assume .items, when omitted at the end
+    key = key .. ".items"
+  end
+
+  print(string.format("[TapedTvShows] Inserting into loot table by table key \"%s\" with chance %f ...", key, chance)) 
+
+  insertByDottedKey(key, chance)
+end
 
 local function createDefaultConfigFile()
   local writer = getModFileWriter("TapedTvShows", "loot.ini", true, false)
@@ -34,7 +152,7 @@ local function createDefaultConfigFile()
 end
 
 local function parseConfigFile(reader)
-  print("Parsing config file loot.ini ...")
+  print("[TapedTvShows] Parsing config file \"loot.ini\"...")
   
   local section = ""
   
@@ -42,7 +160,7 @@ local function parseConfigFile(reader)
     local line = reader:readLine()
     
     if line == nil then
-      break
+      break -- EOF
     end
     
     if line == "" or line:sub(0, 1) ~= "#" then -- ignore empty or comments
@@ -56,9 +174,9 @@ local function parseConfigFile(reader)
           local value = line:sub(index+1):gsub("^%s*(.-)%s*$", "%1") -- trim whitespace
 
           if section == "InsertByItem" then
-            insertByItemName[key] = tonumber(value)
+            insertByItemName(key, tonumber(value)) -- i.e. look for existing "CreditCard" drops in vanilla loot and insert our loot there
           elseif section == "InsertByTable" then
-            insertByTableName[key] = tonumber(value)
+            insertByTableName(key, tonumber(value)) -- i.e. insert into a loot table by name, e.g. "gasstore.shelves"
           end
         end
       end
@@ -68,91 +186,37 @@ local function parseConfigFile(reader)
   reader:close()
 end
 
-local function insertAllTvShowTapes(items, chance)
-  for n=1, 25 do
-    table.insert(items, "TapedTvShows.VideoTape" .. n)
-    table.insert(items, tonumber(chance))
-  end
-end
-
-local function modifyLootTable(key, items)
-  --print("modifyLootTable " .. key)
-  
-  -- insert by looking for a key item in the table
-  for i=1, #items, 2 do
-    local lootName = items[i]
-    
-    for itemName, chance in pairs(insertByItemName) do
-      if itemName == lootName then
-        print(string.format("[TapedTvShows] Inserting tapes into loot table \"%s\" because of item key \"%s\" with chance %f ...", key, itemName, chance))
-        insertAllTvShowTapes(items, chance)
-        return true -- loot table was changed, we're done with this table
-      end
-    end
-  end
-  
-  -- insert by directly specifying the table's name
-  for tableName, chance in pairs(insertByTableName) do
-    if tableName == key then
-      print(string.format("[TapedTvShows] Inserting tapes into loot table \"%s\" because of table key \"%s\" with chance %f ...", key, tableName, chance))
-      insertAllTvShowTapes(items, chance)
-      return true -- loot table was changed, we're done with this table
-    end
-  end
-  
-  return false
-end
-
-local configFile = getModFileReader("TapedTvShows", "loot.ini", false)
-
-if configFile == nil then -- fileExists()
-  -- create the config file
-  createDefaultConfigFile()
-  configFile = getModFileReader("TapedTvShows", "loot.ini", false)
-end
-
--- read values from the file and update local vars
-parseConfigFile(configFile)
-
 local function preDistributionMerge()
   --print("[TapedTvShows] preDistributionMerge")
 
-  for k1, v1 in pairs(SuburbsDistributions) do
-    local items = v1["items"]
-    local junk
-    
-    if items then
-      if not modifyLootTable(k1, items) then
-        junk = v1["junk"]
-      
-        if junk and junk["items"] then
-          modifyLootTable(k1 .. ".junk", junk["items"])
-        end
-      end
-    else
-      for k2, v2 in pairs(v1) do
-        items = v2["items"]
-        
-        if items then
-          if not modifyLootTable(k1 .. "." .. k2, items) then
-            junk = v2["junk"]
-            
-            if junk and junk["items"] then
-              modifyLootTable(k1 .. "." .. k2 .. ".junk", junk["items"])
-            end
-          end
-        end
-      end
-    end
+  local configFile = getModFileReader("TapedTvShows", "loot.ini", false)
+
+  if configFile == nil then -- !fileExists()
+    -- create the config file
+    createDefaultConfigFile()
+    configFile = getModFileReader("TapedTvShows", "loot.ini", false)
+  end
+  
+  -- read values from the file and update local distributionTable accordingly
+  parseConfigFile(configFile)
+
+  -- add our loot table additions to the end of Distributions, so the game will take care of merging it
+  table.insert(Distributions, distributionTable)
+
+  -- dump our loot table additions to logfile in debug mode:
+  if getDebug() then
+    print("[TapedTvShows] preDistributionMerge: distributionTable =")
+    debugLuaTable(distributionTable, -5)
+    print("[TapedTvShows] -----------------------------------------")
   end
 end
 
 local function postDistributionMerge()
+  -- dump the final loot table (post merge) to logfile in debug mode:
   if getDebug() then
-    print("[TapedTvShows] postDistributionMerge")
+    print("[TapedTvShows] postDistributionMerge: SuburbsDistributions =")
     debugLuaTable(SuburbsDistributions, -5)
-    --DeepPrintDistributionTable(SuburbsDistributions,"")
-    print("---------------------------------------------")
+    print("[TapedTvShows] ---------------------------------------------")
   end
 end
 
