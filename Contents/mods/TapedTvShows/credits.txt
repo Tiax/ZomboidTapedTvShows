@@ -1,2 +1,3 @@
 * VHS icon based on the FatCow icons (http://www.fatcow.com/free-icons) released under Creative Commons Attribution 3.0 License.
 * Thanks GriNAME for the RU translations!
+* CN translations by shu307 - thanks!

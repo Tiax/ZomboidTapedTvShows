@@ -1,0 +1,3 @@
+Recipes_CN = {
+	Recipe_Dismantle_Video_Tape = "拆解录像带"
+}

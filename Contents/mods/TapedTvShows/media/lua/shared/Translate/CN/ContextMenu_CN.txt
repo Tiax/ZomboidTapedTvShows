@@ -1,0 +1,7 @@
+ContextMenu_CN = {
+	ContextMenu_VCR_Menu = "VCR播放器",
+	ContextMenu_VCR_EjectVideoTape = "弹出录像带",
+	ContextMenu_VCR_InsertVideoTape = "插入%1",
+	ContextMenu_VCR_InsertVideoTape_ToolTip_Title = "%1",
+	ContextMenu_VCR_InsertVideoTape_ToolTip_Text = "播放此录像带。",
+}
