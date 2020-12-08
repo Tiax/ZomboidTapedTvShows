@@ -1,6 +1,0 @@
-# Translation files are encoded differently per-language,
-# see https://github.com/TheIndieStone/ProjectZomboidTranslations/issues/155
-EN/*.txt text encoding=utf-8
-DE/*.txt text encoding=cp1252
-RU/*.txt text encoding=cp1251
-CN/*.txt text encoding=utf-8
