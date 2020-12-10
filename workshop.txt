@@ -10,5 +10,5 @@ description=
 description=Compatibility notes: Created and tested on IWBUMS build 41.45. May conflict with other mods overriding ISRadioInteractions.
 description=
 description=See sources on [url=https://github.com/Tiax/ZomboidTapedTvShows]Github[/url].
-tags=
+tags=Build 41;items;TV
 visibility=public
