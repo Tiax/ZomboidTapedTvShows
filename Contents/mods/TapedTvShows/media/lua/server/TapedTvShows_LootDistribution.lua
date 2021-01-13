@@ -82,28 +82,30 @@ local function insertByItemName(itemName, chance)
       -- items on second level, e.g. "conveniencestore.freezer.items"
       -- check in each sub table:
       for k2, v2 in pairs(v1) do
-        table.insert(parts, k2) -- e.g. "freezer"
+        if type(v2) == "table" then
+          table.insert(parts, k2) -- e.g. "freezer"
 
-        if lootTableContains(v2["items"], itemName) then
-          table.insert(parts, "items")
-        elseif v2["junk"] ~= nil and lootTableContains(v2["junk"]["items"], itemName) then
-          table.insert(parts, "junk")
-          table.insert(parts, "items")
-        end
-
-        if #parts > 2 then -- more than 2 levels - we got a match something
-          if getDebug() then 
-            print(string.format("[TapedTvShows] Inserting into loot table \"%s\" by key item \"%s\" with chance %f ...", table.concat(parts, "."), itemName, chance)) 
+          if lootTableContains(v2["items"], itemName) then
+            table.insert(parts, "items")
+          elseif v2["junk"] ~= nil and lootTableContains(v2["junk"]["items"], itemName) then
+            table.insert(parts, "junk")
+            table.insert(parts, "items")
           end
 
-          insertByDottedKey(parts, chance)
+          if #parts > 2 then -- more than 2 levels - we got a match something
+            if getDebug() then 
+              print(string.format("[TapedTvShows] Inserting into loot table \"%s\" by key item \"%s\" with chance %f ...", table.concat(parts, "."), itemName, chance)) 
+            end
 
-          while #parts > 2 do
-            table.remove(parts)
+            insertByDottedKey(parts, chance)
+
+            while #parts > 2 do
+              table.remove(parts)
+            end
           end
-        end
 
-        table.remove(parts) -- k2
+          table.remove(parts) -- k2
+        end
       end
     end
   end
