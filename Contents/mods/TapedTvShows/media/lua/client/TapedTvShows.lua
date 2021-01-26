@@ -1,10 +1,12 @@
--- TapedTvShows.lua
+-- Taped Tv Shows MOD
 TapedTvShows = TapedTvShows or {};
 
 TapedTvShows.LifeAndLivingFreq = 203 -- Life and Living TV
 
+-- Does this IsoTelevision have a VCR Player? 
 TapedTvShows.canDevicePlayTapes = function (isoTelevision)
   local data = isoTelevision:getDeviceData()
+  -- Let's have all TVs, except for the antique TV, support VCR
   return data:getDeviceName() ~= "Antique Television"
 end
 
@@ -20,6 +22,7 @@ TapedTvShows.onEjectTape = function (worldobjects, player, isoTelevision)
   end
 end
 
+-- Helper function to retrieve one of the game's existing broadcasts and return a clone
 TapedTvShows.cloneExistingBroadCast = function (channelFrequency, broadcastUuid)
   -- we get the broadcast for our tapes from the Live and Living channel (by broadcast's uuid):
   local channel = TapedTvShows.getChannelByFreq(channelFrequency);
@@ -87,6 +90,7 @@ TapedTvShows.addDebugMenuOptions = function (menu, player, isoTelevision)
   tmp.toolTip = tt
 end
 
+-- Helper function to retrieve a TV channel by its frequency
 TapedTvShows.getChannelByFreq = function (freq)
   local channels = getZomboidRadio():getScriptManager():getChannelsList()
   local result = nil
@@ -101,6 +105,8 @@ TapedTvShows.getChannelByFreq = function (freq)
   return result
 end
 
+-- Helper function to return an "empty" TV channel (let's call it AV1 for nostalgia's sake) on a per-device basis we can play our broadcasts on.
+-- We don't want two TVs playing the same show, when we insert a tape into one of them!
 TapedTvShows.getVhsChannel = function (isoTelevision)
   local deviceData = isoTelevision:getDeviceData()
   

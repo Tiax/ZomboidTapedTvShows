@@ -1,4 +1,4 @@
--- Overwrite the ISRadioInteractions.OnDeviceText implementation, so we can limit XP gain
+-- Overwrite the ISRadioInteractions.OnDeviceText implementation, so we can limit XP gain or react in different ways to a broadcast's line
 TapedTvShows = TapedTvShows or {};
 
 TapedTvShows.playerOnDeviceText = function (player, _interactCodes, _x, _y, _z, _line, source)
