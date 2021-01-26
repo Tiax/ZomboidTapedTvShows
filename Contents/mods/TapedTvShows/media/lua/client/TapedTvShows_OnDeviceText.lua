@@ -28,7 +28,7 @@ TapedTvShows.playerOnDeviceText = function (player, _interactCodes, _x, _y, _z, 
   -- trigger OnSeeVhsTapeLine
   local codes = _interactCodes:split(",") -- pass those by reference as a table to any event to handle/override
 
-  triggerEvent("OnSeeVhsTapeLine", player, broadCast, codes)
+  triggerEvent("OnSeeVhsTapeLine", player, broadCast, codes, _line, source)
 
   _interactCodes = table.concat(codes, ",")
 

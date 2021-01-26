@@ -1,5 +1,6 @@
 TapedTvShows = TapedTvShows or {};
 
+-- See media\radio\RadioData.xml
 local TapeMapping = {
   ["VideoTape1"]  = "465ef67d-21a8-4c22-a6f4-257eea64e8a3", -- Exposure Survival, day 0
   ["VideoTape2"]  = "75d511c5-cb3f-41cc-81c9-b47df52957ae", -- Cookshow, day 0
@@ -52,6 +53,10 @@ end
 
 -- checks whether an InventoryItem is a relevant tape for this mod
 local isRelevantVideoTape = function (item)
+  if item == nil or not instanceof(item, "InventoryItem") then
+    return false
+  end
+
   if string.sub(item:getFullType(), 1, string.len("TapedTvShows.VideoTape")) == "TapedTvShows.VideoTape" then
     return true
   end
@@ -157,8 +162,10 @@ end
 -- Implement the OnSeeVhsTapeLine event:
 -- Do something, when a broadcast line is seen.
 -- For Life and Living shows, we should make sure we don't get XP multiple times!
-local OnSeeVhsTapeLine = function (player, broadCast, codes)
+local OnSeeVhsTapeLine = function (player, broadCast, codes, line)
   -- check if it's a show we're supplying via video tape (so we don't interfere with other broadcasts etc.)
+  local key = broadCast:getID() .. ":" .. broadCast:getCurrentLineNumber()
+
   if tapeMappingContains(broadCast:getID()) then
     --print(("TapedTvShows.TapeMappingContains: %q --> %s"):format(key, "true"))
     
@@ -168,17 +175,16 @@ local OnSeeVhsTapeLine = function (player, broadCast, codes)
     if playerModData["SeenDeviceText"] == nil then
       playerModData["SeenDeviceText"] = {}
     end
-    
-    local key = broadCast:getID() .. ":" .. broadCast:getCurrentLineNumber()
 
     if playerModData["SeenDeviceText"][key] ~= nil then
       -- we've already seen this, let's override the XP gains
-      --print(("Seen: %s %q"):format(key, _line))
+      --print(("Seen: %s %q"):format(key, line))
 
       for i=1, #codes do
         local stat = codes[i]:sub(0,3)
         
-        if stat == "CRP" or stat == "COO" or stat == "FRM" or stat == "DOC" or stat == "ELC" or stat == "MTL" or stat == "FIS" or stat == "TRA" or stat == "FOR" then
+        if stat ~= "BOR" and stat ~= "STS" and stat ~= "UHP" then
+          -- stat == "CRP" or stat == "COO" or stat == "FRM" or stat == "DOC" or stat == "ELC" or stat == "MTL" or stat == "FIS" or stat == "TRA" or stat == "FOR"
           -- flip a coin for BOR or STS reduction, stat may occur multiple times in list after replace, doesn't matter!
           if ZombRand(2) == 0 then
             codes[i] = "BOR-1"
@@ -189,7 +195,7 @@ local OnSeeVhsTapeLine = function (player, broadCast, codes)
       end
     else
       -- we're seeing it for the first time, let's simply remember we saw it for next time
-      --print(("Not seen: %s %q"):format(key, _line))
+      --print(("Not seen: %s %q"):format(key, line))
       playerModData["SeenDeviceText"][key] = true
     end
   else
