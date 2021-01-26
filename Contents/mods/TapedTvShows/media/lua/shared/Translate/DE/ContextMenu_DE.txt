@@ -4,4 +4,7 @@ ContextMenu_DE = {
 	ContextMenu_VCR_InsertVideoTape = "Kassette einlegen: %1",
 	ContextMenu_VCR_InsertVideoTape_ToolTip_Title = "%1",
 	ContextMenu_VCR_InsertVideoTape_ToolTip_Text = "Diese Kassette abspielen.",
+	ContextMenu_Tape_Already_Seen = "Bereits gesehen",
+	ContextMenu_Tape_Not_Seen = "Noch nicht gesehen",
+	ContextMenu_Tape_Not_Fully_Seen = "Teilweise gesehen"
 }
