@@ -188,9 +188,6 @@ local OnEjectVhsTape = function (player, tv, channel)
   local deviceData = tv:getDeviceData()
   
   deviceData:setRandomChannel()
-  deviceData:cleanSoundsAndEmitter()
-  deviceData:playSoundSend("RadioButton", true)
-
   channel:setActiveScriptNull()
 
   -- delete the AV1 channel

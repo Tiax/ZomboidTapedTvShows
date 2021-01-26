@@ -10,7 +10,7 @@ function ISInsertVideoTape:new(character, tv, tape)
   self.__index = self
   o.stopOnWalk = true;
   o.stopOnRun = true;
-  o.maxTime = 70;
+  o.maxTime = 60*5;
   o.tape = tape;
   o.tv = tv;
   o.character  = character;
@@ -35,9 +35,14 @@ end
 function ISInsertVideoTape:start()
   self:setActionAnim("Loot")
   self.character:SetVariable("LootPosition", "Mid")
+  self.sound = getSoundManager():PlayWorldSound("vhs_insert", self.tv:getSquare(), 0.0, 10, 1.0, true)
 end
 
 function ISInsertVideoTape:stop()
+  if self.sound and self.sound:isPlaying() then
+    self.sound:stop();
+  end
+
   ISBaseTimedAction.stop(self);
 end
 
@@ -46,6 +51,10 @@ function ISInsertVideoTape:perform()
 
   triggerEvent("OnPlayVhsTape", self.character, self.tape, self.tv, channel)
   
+  --if self.sound and self.sound:isPlaying() then
+    --self.sound:stop();
+  --end
+
   -- needed to remove from queue / start next.
   ISBaseTimedAction.perform(self);
 end
@@ -58,7 +67,7 @@ function ISEjectVideoTape:new(character, tv)
   self.__index = self
   o.stopOnWalk = true;
   o.stopOnRun = true;
-  o.maxTime = 30;
+  o.maxTime = 60*2;
   o.tv = tv;
   o.character  = character;
   return o;
@@ -81,9 +90,14 @@ end
 function ISEjectVideoTape:start()
   self:setActionAnim("Loot")
   self.character:SetVariable("LootPosition", "Mid")
+  self.sound = getSoundManager():PlayWorldSound("vhs_eject", self.tv:getSquare(), 0.0, 10, 1.0, true)
 end
 
 function ISEjectVideoTape:stop()
+  if self.sound and self.sound:isPlaying() then
+    self.sound:stop();
+  end
+
   ISBaseTimedAction.stop(self);
 end
 
@@ -92,6 +106,10 @@ function ISEjectVideoTape:perform()
   
   triggerEvent("OnEjectVhsTape", self.character, self.tv, channel)
   
+  --if self.sound and self.sound:isPlaying() then
+    --self.sound:stop();
+  --end
+
   -- needed to remove from queue / start next.
   ISBaseTimedAction.perform(self);
 end
