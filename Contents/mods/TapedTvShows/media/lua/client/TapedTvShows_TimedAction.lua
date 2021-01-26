@@ -1,5 +1,7 @@
 require "TimedActions/ISBaseTimedAction"
+
 TapedTvShows = TapedTvShows or {};
+
 ISInsertVideoTape = ISBaseTimedAction:derive("ISInsertVideoTape");
 
 function ISInsertVideoTape:new(character, tv, tape)
@@ -40,13 +42,15 @@ function ISInsertVideoTape:stop()
 end
 
 function ISInsertVideoTape:perform()
-  TapedTvShows.playBroadCastFromTape(self.character, self.tv, self.tape)
+  local channel = TapedTvShows.getVhsChannel(self.tv)
+
+  triggerEvent("OnPlayVhsTape", self.character, self.tape, self.tv, channel)
   
   -- needed to remove from queue / start next.
   ISBaseTimedAction.perform(self);
 end
 
-ISEjectVideoTape = ISBaseTimedAction:derive("ISInsertVideoTape");
+ISEjectVideoTape = ISBaseTimedAction:derive("ISEjectVideoTape");
 
 function ISEjectVideoTape:new(character, tv)
   local o = {}
@@ -84,7 +88,9 @@ function ISEjectVideoTape:stop()
 end
 
 function ISEjectVideoTape:perform()
-  TapedTvShows.stopBroadCastEjectTape(self.character, self.tv)
+  local channel = TapedTvShows.getVhsChannel(self.tv)
+  
+  triggerEvent("OnEjectVhsTape", self.character, self.tv, channel)
   
   -- needed to remove from queue / start next.
   ISBaseTimedAction.perform(self);

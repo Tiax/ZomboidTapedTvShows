@@ -1,4 +1,4 @@
--- Overwrite the ISRadioInteractions.OnDeviceText implementation, so we can limit XP gain
+-- Overwrite the ISRadioInteractions.OnDeviceText implementation, so we can limit XP gain or react in different ways to a broadcast's line
 TapedTvShows = TapedTvShows or {};
 
 TapedTvShows.playerOnDeviceText = function (player, _interactCodes, _x, _y, _z, _line, source)
@@ -20,56 +20,18 @@ TapedTvShows.playerOnDeviceText = function (player, _interactCodes, _x, _y, _z, 
   if not instanceof(source, "IsoTelevision") then
     return _interactCodes
   end
-  
-  local playerModData = player:getModData()
 
   local deviceData = source:getDeviceData()
   local channel = TapedTvShows.getChannelByFreq(deviceData:getChannel())
   local broadCast = channel:getAiringBroadcast()
   
-  -- get the line's UUID
-  local key = broadCast:getID()
-  
-  -- check if it's a show we're supplying via video tape (so we don't interfere with other shows)
-  if TapedTvShows.TapeMappingContains(broadCast:getID()) then
-    --print(("TapedTvShows.TapeMappingContains: %q --> %s"):format(key, "true"))
-    
-    key = key .. ":" .. broadCast:getCurrentLineNumber()
-    
-    -- see if it's in the player's modData
-    if playerModData["SeenDeviceText"] == nil then
-      playerModData["SeenDeviceText"] = {}
-    end
-    
-    if playerModData["SeenDeviceText"][key] ~= nil then
-      -- we've already seen this, let's override the XP gains
-      --print(("Seen: %s %q"):format(key, _line))
-      
-      local codes = _interactCodes:split(",")
+  -- trigger OnSeeVhsTapeLine
+  local codes = _interactCodes:split(",") -- pass those by reference as a table to any event to handle/override
 
-      for i=1, #codes do
-        local stat = codes[i]:sub(0,3)
-        
-        if stat == "CRP" or stat == "COO" or stat == "FRM" or stat == "DOC" or stat == "ELC" or stat == "MTL" or stat == "FIS" or stat == "TRA" or stat == "FOR" then
-          -- flip a coin for BOR or STS reduction, stat may occur multiple times in list after replace, doesn't matter!
-          if ZombRand(2) == 0 then
-            codes[i] = "BOR-1"
-          else
-            codes[i] = "STS-1"
-          end
-        end
-      end
-      
-      _interactCodes = table.concat(codes, ",")
-    else
-      -- we're seeing it for the first time, let's simply remember we saw it for next time
-      --print(("Not seen: %s %q"):format(key, _line))
-      playerModData["SeenDeviceText"][key] = true
-    end
-  else
-    --print(("TapedTvShows.TapeMappingContains: %q --> %s"):format(key, "false"))
-  end
-  
+  triggerEvent("OnSeeVhsTapeLine", player, broadCast, codes)
+
+  _interactCodes = table.concat(codes, ",")
+
   return _interactCodes
 end
 
