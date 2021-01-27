@@ -1,0 +1,23 @@
+module TapedTvShows
+{
+  sound VHSInsert
+  {
+    category = Object,
+    clip
+    {
+      file = media/sound/vhs_insert.ogg,
+      volume = 1.0,
+    }
+  }
+
+  sound VHSEject
+  {
+    category = Object,
+    clip
+    {
+      file = media/sound/vhs_eject.ogg,
+      volume = 1.0,
+    }
+  }
+
+}

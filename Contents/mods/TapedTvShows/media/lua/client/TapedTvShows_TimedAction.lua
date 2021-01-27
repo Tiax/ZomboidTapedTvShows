@@ -35,7 +35,7 @@ end
 function ISInsertVideoTape:start()
   self:setActionAnim("Loot")
   self.character:SetVariable("LootPosition", "Mid")
-  self.sound = getSoundManager():PlayWorldSound("vhs_insert", self.tv:getSquare(), 0.0, 10, 1.0, true)
+  self.sound = getSoundManager():PlayWorldSound("VHSInsert", self.tv:getSquare(), 0.0, 10, 1.0, true)
 end
 
 function ISInsertVideoTape:stop()
@@ -90,7 +90,7 @@ end
 function ISEjectVideoTape:start()
   self:setActionAnim("Loot")
   self.character:SetVariable("LootPosition", "Mid")
-  self.sound = getSoundManager():PlayWorldSound("vhs_eject", self.tv:getSquare(), 0.0, 10, 1.0, true)
+  self.sound = getSoundManager():PlayWorldSound("VHSEject", self.tv:getSquare(), 0.0, 10, 1.0, true)
 end
 
 function ISEjectVideoTape:stop()
