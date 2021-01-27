@@ -260,38 +260,53 @@ local OnSeeVhsTapeLine = function (player, broadCast, codes, line)
   end
 end
 
--- Temporary solution to implement a "seen"/"not seen" on tape items.
-local OnRightClickInventoryItem = function (player, context, items)
-  local testItem = nil
+-- Tooltip handling:
+local originalRender = ISToolTipInv.render
+local cachedToolTip = nil
+local currentTooltipItem = nil
+local cachedToolTipText = ""
 
-  -- inspect only the first item in a stack
-  for key, value in ipairs(items) do
-    if instanceof(value, "InventoryItem") then
-      testItem = value
-    else
-      testItem = value.items[1]
-    end
-
-    break
-  end
-
-  if not isRelevantVideoTape(testItem) then
+function ISToolTipInv:render()
+  if not isRelevantVideoTape(self.item) then
+    currentTooltipItem = nil
+    originalRender(self)
     return
   end
 
-  local seen = hasPlayerSeen(getSpecificPlayer(player), testItem)
+  if self.item ~= currentTooltipItem then
+    currentTooltipItem = self.item
 
-  if seen == 1 then
-    context:addOptionOnTop(getText("ContextMenu_Tape_Already_Seen"))
-  elseif seen == -1 then
-    context:addOptionOnTop(getText("ContextMenu_Tape_Not_Fully_Seen"))
-  else -- assume 0
-    context:addOptionOnTop(getText("ContextMenu_Tape_Not_Seen"))
+    local player = getSpecificPlayer(self.owner.player)
+    local seen = hasPlayerSeen(player, self.item)
+
+    if seen == 1 then
+      cachedToolTipText = getText("ContextMenu_Tape_Already_Seen")
+    elseif seen == -1 then
+      cachedToolTipText = getText("ContextMenu_Tape_Not_Fully_Seen")
+    else -- assume 0
+      cachedToolTipText = getText("ContextMenu_Tape_Not_Seen")
+    end
   end
 
+  local oldHeightOffset = 0
+  local originalSetHeight = self.setHeight
+  local originalDrawRectBorder = self.drawRectBorder
+
+  self.setHeight = function(self, num, ...)
+    oldHeightOffset = num
+    return originalSetHeight(self, num + self.tooltip:getLineSpacing(), ...)
+  end
+
+  self.drawRectBorder = function(self, ...)
+    self.tooltip:DrawText(UIFont.Small, cachedToolTipText, 5, oldHeightOffset-5, 1.0, 1.0, 0.8, 1.0)
+    return originalDrawRectBorder(self, ...)
+  end
+
+  originalRender(self)
+  self.setHeight = originalSetHeight
+  self.drawRectBorder = originalDrawRectBorder
 end
 
-Events.OnFillInventoryObjectContextMenu.Add(OnRightClickInventoryItem)
 Events.OnEnumerateVhsTapes.Add(OnEnumerateVhsTapes)
 Events.OnPlayVhsTape.Add(OnPlayVhsTape)
 Events.OnEjectVhsTape.Add(OnEjectVhsTape)
