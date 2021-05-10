@@ -1,5 +1,5 @@
 ContextMenu_PL = {
-	ContextMenu_VCR_Menu = "Odtwarzacz VCR",
+	ContextMenu_VCR_Menu = "Odtwarzacz VHS",
 	ContextMenu_VCR_EjectVideoTape = "Wyciągnij kasetę",
 	ContextMenu_VCR_InsertVideoTape = "Włóż kasetę: %1",
 	ContextMenu_VCR_InsertVideoTape_ToolTip_Title = "%1",
