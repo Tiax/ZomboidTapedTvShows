@@ -92,11 +92,8 @@ local function preDistributionMerge()
   insertAllTvShowTapes(VehicleDistributions["Radio"]["TruckBed"].items, 1.0)
 
   -- Make all Fishing tapes appear in related crates & shelves
-  if ProceduralDistributions.list["CrateFishing"].rolls <= 0 then -- Note: this table has 0 rolls in current version?! Increase to 1, if not already...
-    ProceduralDistributions.list["CrateFishing"].rolls = 1
-  end
-  
   for _, v in ipairs(fishingTapes) do
+    -- Note: this table has 0 rolls in current version. Probably unused, at this time...
     table.insert(ProceduralDistributions.list["CrateFishing"].items, "TapedTvShows.VideoTape" .. v)
     table.insert(ProceduralDistributions.list["CrateFishing"].items, 5.0)
   end
