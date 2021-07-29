@@ -130,6 +130,7 @@ local function preDistributionMerge()
     table.insert(ProceduralDistributions.list["CampingStoreBooks"].junk.items, "TapedTvShows.VideoTape" .. v)
     table.insert(ProceduralDistributions.list["CampingStoreBooks"].junk.items, 10.0)
     
+    -- Note: this distribution does not currently seem to be in use...
     table.insert(ProceduralDistributions.list["CrateCamping"].items, "TapedTvShows.VideoTape" .. v)
     table.insert(ProceduralDistributions.list["CrateCamping"].items, 0.2)
   end
