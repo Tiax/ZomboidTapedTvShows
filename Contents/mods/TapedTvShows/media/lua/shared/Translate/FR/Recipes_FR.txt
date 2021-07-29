@@ -1,0 +1,3 @@
+Recipes_FR = {
+	Recipe_Dismantle_Video_Tape = "Démonter la cassette vidéo"
+}

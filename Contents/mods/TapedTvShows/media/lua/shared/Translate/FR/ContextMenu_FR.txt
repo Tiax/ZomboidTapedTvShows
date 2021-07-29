@@ -1,0 +1,10 @@
+ContextMenu_FR = {
+	ContextMenu_VCR_Menu = "Lecteur VHS",
+	ContextMenu_VCR_EjectVideoTape = "Éjecter la cassette",
+	ContextMenu_VCR_InsertVideoTape = "Insérer la cassette: %1",
+	ContextMenu_VCR_InsertVideoTape_ToolTip_Title = "%1",
+	ContextMenu_VCR_InsertVideoTape_ToolTip_Text = "Lire cette cassette vidéo.",
+	ContextMenu_Tape_Already_Seen = "Déjà vu",
+	ContextMenu_Tape_Not_Seen = "Pas encore vu",
+	ContextMenu_Tape_Not_Fully_Seen = "Partiellement vu",
+}
