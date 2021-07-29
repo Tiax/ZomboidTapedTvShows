@@ -126,7 +126,7 @@ local function preDistributionMerge()
   end
 
   -- Make all Exposure Survival tapes appear in related crates & shelves:
-  for _, v in ipairs(woodcraftTapes) do
+  for _, v in ipairs(survivalTapes) do
     table.insert(ProceduralDistributions.list["CampingStoreBooks"].junk.items, "TapedTvShows.VideoTape" .. v)
     table.insert(ProceduralDistributions.list["CampingStoreBooks"].junk.items, 10.0)
     
