@@ -1,23 +1,11 @@
 -- see media\lua\server\Items\Distributions.lua
 Distributions = Distributions or {}
+ProceduralDistributions = ProceduralDistributions or {}
+VehicleDistributions = VehicleDistributions or {}
 
 local distributionTable = {
   -- will be populated dynamically from the loot.ini config file
 }
-
-local function lootTableContains(tbl, item)
-  if type(tbl) ~= "table" then
-    return false -- not a table...
-  end
-
-  for i=1, #tbl, 2 do
-    if tbl[i] and tostring(tbl[i]) == tostring(item) then
-      return true
-    end
-  end
-
-  return false
-end
 
 local function insertAllTvShowTapes(tbl, chance)
   for n=1, 25 do
@@ -53,158 +41,105 @@ local function insertByDottedKey(key, chance)
   insertAllTvShowTapes(node, chance)
 end
 
-local function insertByItemName(itemName, chance)
-  -- go through the base game's SuburbsDistributions and look for a key item "itemName"
-  -- construct a "dotted key" of the loot table, if found
-  for k1, v1 in pairs(SuburbsDistributions) do
-    local parts = { k1 } -- e.g. "conveniencestore", "Bag_WeaponBag", ...
-    
-    if v1["items"] ~= nil or v1["junk"] ~= nil then
-      -- items directly on first level, usually a bag, e.g. "Bag_WeaponBag.items"
-      local found = nil
-
-      if lootTableContains(v1["items"], itemName) then
-        found = "items"
-      elseif lootTableContains(v1["junk"], itemName) then
-        found = "junk"
-      end
-
-      if found then
-        table.insert(parts, found) -- "items" or "junk"
-
-        if getDebug() then 
-          print(string.format("[TapedTvShows] Inserting tapes into loot table \"%s\" by key item \"%s\" with chance %f ...", table.concat(parts, "."), itemName, chance)) 
-        end
-
-        insertByDottedKey(parts, chance)
-      end
-    else
-      -- items on second level, e.g. "conveniencestore.freezer.items"
-      -- check in each sub table:
-      for k2, v2 in pairs(v1) do
-        if type(v2) == "table" then
-          table.insert(parts, k2) -- e.g. "freezer"
-
-          if lootTableContains(v2["items"], itemName) then
-            table.insert(parts, "items")
-          elseif v2["junk"] ~= nil and lootTableContains(v2["junk"]["items"], itemName) then
-            table.insert(parts, "junk")
-            table.insert(parts, "items")
-          end
-
-          if #parts > 2 then -- more than 2 levels - we got a match something
-            if getDebug() then 
-              print(string.format("[TapedTvShows] Inserting into loot table \"%s\" by key item \"%s\" with chance %f ...", table.concat(parts, "."), itemName, chance)) 
-            end
-
-            insertByDottedKey(parts, chance)
-
-            while #parts > 2 do
-              table.remove(parts)
-            end
-          end
-
-          table.remove(parts) -- k2
-        end
-      end
-    end
-  end
-end
-
-local function insertByTableName(key, chance)
-  if (key:sub(-6) ~= ".items") then
-    -- assume .items, when omitted at the end
-    key = key .. ".items"
-  end
-
-  print(string.format("[TapedTvShows] Inserting into loot table by table key \"%s\" with chance %f ...", key, chance)) 
-
-  insertByDottedKey(key, chance)
-end
-
-local function createDefaultConfigFile()
-  local writer = getModFileWriter("TapedTvShows", "loot.ini", true, false)
-  
-  writer:writeln("# TapedTvShows: loot configuration file")
-  writer:writeln("")
-  
-  writer:writeln("[InsertByItem]")
-  writer:writeln("# Insert a drop by looking for an existing item in the drop tables")
-  writer:writeln("# lines below are in format: Item type=base chance to drop")
-  writer:writeln("")
-  
-  writer:writeln("# make tapes appear anywhere CDs (Disc) appear. Covers mostly shops and shelves.")
-  writer:writeln("Disc=" .. tostring(0.025))
-  writer:writeln("")
-  
-  writer:writeln("[InsertByTable]")
-  writer:writeln("# Insert a drop by directly inserting into an existing drop table")
-  writer:writeln("# See ProjectZomboid\\media\\lua\\server\\Items\\Distributions.lua for the table names")
-  writer:writeln("# lines below are in format: table name=base chance to drop")
-  writer:writeln("")
-  writer:writeln("# make tapes appear on zombie corpses")
-  writer:writeln("all.inventorymale=-1.0")
-  writer:writeln("all.inventoryfemale=-1.0")
-  writer:writeln("")
-
-  writer:writeln("# makes tapes appear on shelves, e.g. living rooms, general stores")
-  writer:writeln("all.shelves=" .. tostring(0.025))
-
-  writer:close()
-end
-
-local function parseConfigFile(reader)
-  print("[TapedTvShows] Parsing config file \"loot.ini\"...")
-  
-  local section = ""
-  
-  while true do
-    local line = reader:readLine()
-    
-    if line == nil then
-      break -- EOF
-    end
-    
-    if line == "" or line:sub(0, 1) ~= "#" then -- ignore empty or comments
-      if line:sub(0, 1) == "[" then
-        section = line:gsub("^%[%s*", ""):gsub("%s*%]$", "")
-      else
-        local index = line:find("=", 1, true)
-        
-        if index ~= nil then
-          local key = line:sub(0, index-1):gsub("^%s*(.-)%s*$", "%1") -- trim whitespace
-          local value = line:sub(index+1):gsub("^%s*(.-)%s*$", "%1") -- trim whitespace
-
-          if section == "InsertByItem" then
-            insertByItemName(key, tonumber(value)) -- i.e. look for existing "CreditCard" drops in vanilla loot and insert our loot there
-          elseif section == "InsertByTable" then
-            insertByTableName(key, tonumber(value)) -- i.e. insert into a loot table by name, e.g. "gasstore.shelves"
-          end
-        end
-      end
-    end
-  end
-
-  reader:close()
-end
-
 local function preDistributionMerge()
   --print("[TapedTvShows] preDistributionMerge")
 
-  local configFile = getModFileReader("TapedTvShows", "loot.ini", false)
+  -- TODO: We might revisit the loot.ini method later.
+  -- The 41.52 update broke most of it, anyway
 
-  if configFile == nil then -- !fileExists()
-    -- create the config file
-    createDefaultConfigFile()
-    configFile = getModFileReader("TapedTvShows", "loot.ini", false)
+  local cookingTapes = { 2, 5, 8, 11, 14, 17, 20, 23, 25 }
+  local woodcraftTapes = { 3, 6, 9, 12, 15, 18, 21, 24 }
+  local survivalTapes = { 1, 4, 7, 10, 13, 16, 19, 22, 24 }
+  local farmingTapes = { 7 }
+  local trappingTapes = { 19 }
+  local foragingTapes = { 16, 22 }
+  local fishingTapes = { 1, 4, 10 }
+
+  -- Make all tapes appear on Zombie Corpses (rarely)
+  -- make sure "junk" exists on inventorymale/female
+  distributionTable = {
+    ["all"] = {
+      ["inventorymale"] = {
+        junk = {
+          rolls = 1,
+          items = {}
+        }
+      },
+      ["inventoryfemale"] = {
+        junk = {
+          rolls = 1,
+          items = {}
+        }
+      }
+    }
+  }
+  
+  insertByDottedKey("all.inventorymale.junk.items", 0.01)
+  insertByDottedKey("all.inventoryfemale.junk.items", 0.01)
+  
+  -- Make all tapes appear in these procedural loot lists:
+  insertAllTvShowTapes(ProceduralDistributions.list["CrateBooks"].items, 0.25)
+  insertAllTvShowTapes(ProceduralDistributions.list["CrateElectronics"].items, 0.5)
+  insertAllTvShowTapes(ProceduralDistributions.list["CrateMagazines"].items, 0.1)
+  insertAllTvShowTapes(ProceduralDistributions.list["CrateTV"].items, 5)
+  insertAllTvShowTapes(ProceduralDistributions.list["CrateTVWide"].items, 10)
+  insertAllTvShowTapes(ProceduralDistributions.list["ElectronicStoreMagazines"].items, 0.1)
+  insertAllTvShowTapes(ProceduralDistributions.list["GigamartHouseElectronics"].items, 0.2)
+  insertAllTvShowTapes(ProceduralDistributions.list["LivingRoomShelf"].items, 0.1)
+  insertAllTvShowTapes(ProceduralDistributions.list["StoreShelfElectronics"].items, 0.1)
+  
+  -- Make all tapes appear in TV/Radio vehicle loot
+  insertAllTvShowTapes(VehicleDistributions["Radio"]["TruckBed"].items, 1.0)
+
+  -- Make all Fishing tapes appear in related crates & shelves
+  if ProceduralDistributions.list["CrateFishing"].rolls <= 0 then -- Note: this table has 0 rolls in current version?! Increase to 1, if not already...
+    ProceduralDistributions.list["CrateFishing"].rolls = 1
   end
   
-  -- read values from the file and update local distributionTable accordingly
-  parseConfigFile(configFile)
+  for _, v in ipairs(fishingTapes) do
+    table.insert(ProceduralDistributions.list["CrateFishing"].items, "TapedTvShows.VideoTape" .. v)
+    table.insert(ProceduralDistributions.list["CrateFishing"].items, 5.0)
+  end
 
+  -- Make all Cooking tapes appear in related crates & shelves
+  for _, v in ipairs(cookingTapes) do
+    table.insert(ProceduralDistributions.list["KitchenBook"].items, "TapedTvShows.VideoTape" .. v)
+    table.insert(ProceduralDistributions.list["KitchenBook"].items, 0.6)
+  end
+  
+  -- Make all Carpentry tapes appear in related crates & shelves
+  for _, v in ipairs(woodcraftTapes) do
+    table.insert(ProceduralDistributions.list["GarageCarpentry"].items, "TapedTvShows.VideoTape" .. v)
+    table.insert(ProceduralDistributions.list["GarageCarpentry"].items, 0.5)
+    
+    table.insert(ProceduralDistributions.list["CrateTools"].items, "TapedTvShows.VideoTape" .. v)
+    table.insert(ProceduralDistributions.list["CrateTools"].items, 0.5)
+  end
+  
+  -- Make all Farming tapes appear in related crates & shelves
+  for _, v in ipairs(farmingTapes) do
+    table.insert(ProceduralDistributions.list["CrateFarming"].items, "TapedTvShows.VideoTape" .. v)
+    table.insert(ProceduralDistributions.list["CrateFarming"].items, 1.0)
+    
+    table.insert(ProceduralDistributions.list["GardenStoreMisc"].items, "TapedTvShows.VideoTape" .. v)
+    table.insert(ProceduralDistributions.list["GardenStoreMisc"].items, 1.0)
+    
+    table.insert(ProceduralDistributions.list["GigamartFarming"].items, "TapedTvShows.VideoTape" .. v)
+    table.insert(ProceduralDistributions.list["GigamartFarming"].items, 2.0)
+  end
+
+  -- Make all Exposure Survival tapes appear in related crates & shelves:
+  for _, v in ipairs(woodcraftTapes) do
+    table.insert(ProceduralDistributions.list["CampingStoreBooks"].junk.items, "TapedTvShows.VideoTape" .. v)
+    table.insert(ProceduralDistributions.list["CampingStoreBooks"].junk.items, 10.0)
+    
+    table.insert(ProceduralDistributions.list["CrateCamping"].items, "TapedTvShows.VideoTape" .. v)
+    table.insert(ProceduralDistributions.list["CrateCamping"].items, 0.2)
+  end
+  
   -- add our loot table additions to the end of Distributions, so the game will take care of merging it
   table.insert(Distributions, distributionTable)
-
+  
   -- dump our loot table additions to logfile in debug mode:
   if getDebug() then
     print("[TapedTvShows] preDistributionMerge: distributionTable =")
