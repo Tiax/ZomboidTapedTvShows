@@ -76,6 +76,7 @@ local function preDistributionMerge()
   
   insertByDottedKey("all.inventorymale.junk.items", 0.00001)
   insertByDottedKey("all.inventoryfemale.junk.items", 0.00001)
+  insertByDottedKey("storageunit.all.items", 1)
   
   -- Make all tapes appear in these procedural loot lists:
   insertAllTvShowTapes(ProceduralDistributions.list["CrateBooks"].items, 0.25)
