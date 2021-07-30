@@ -74,8 +74,8 @@ local function preDistributionMerge()
     }
   }
   
-  insertByDottedKey("all.inventorymale.junk.items", 0.01)
-  insertByDottedKey("all.inventoryfemale.junk.items", 0.01)
+  insertByDottedKey("all.inventorymale.junk.items", 0.00001)
+  insertByDottedKey("all.inventoryfemale.junk.items", 0.00001)
   
   -- Make all tapes appear in these procedural loot lists:
   insertAllTvShowTapes(ProceduralDistributions.list["CrateBooks"].items, 0.25)
@@ -83,13 +83,14 @@ local function preDistributionMerge()
   insertAllTvShowTapes(ProceduralDistributions.list["CrateMagazines"].items, 0.1)
   insertAllTvShowTapes(ProceduralDistributions.list["CrateTV"].items, 5)
   insertAllTvShowTapes(ProceduralDistributions.list["CrateTVWide"].items, 10)
-  insertAllTvShowTapes(ProceduralDistributions.list["ElectronicStoreMagazines"].items, 0.1)
-  insertAllTvShowTapes(ProceduralDistributions.list["GigamartHouseElectronics"].items, 0.2)
-  insertAllTvShowTapes(ProceduralDistributions.list["LivingRoomShelf"].items, 0.1)
-  insertAllTvShowTapes(ProceduralDistributions.list["StoreShelfElectronics"].items, 0.1)
+  insertAllTvShowTapes(ProceduralDistributions.list["ElectronicStoreMagazines"].items, 2)
+  insertAllTvShowTapes(ProceduralDistributions.list["GigamartHouseElectronics"].items, 4)
+  insertAllTvShowTapes(ProceduralDistributions.list["LivingRoomShelf"].items, 0.5)
+  insertAllTvShowTapes(ProceduralDistributions.list["StoreShelfElectronics"].items, 1)
   
   -- Make all tapes appear in TV/Radio vehicle loot
-  insertAllTvShowTapes(VehicleDistributions["Radio"]["TruckBed"].items, 1.0)
+  insertAllTvShowTapes(VehicleDistributions["Radio"]["TruckBed"].items, 10.0)
+  insertAllTvShowTapes(VehicleDistributions["GloveBox"]["junk"].items, 0.5)
 
   -- Make all Fishing tapes appear in related crates & shelves
   for _, v in ipairs(fishingTapes) do
