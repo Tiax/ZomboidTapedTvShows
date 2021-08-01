@@ -54,28 +54,16 @@ local function preDistributionMerge()
   local trappingTapes = { 19 }
   local foragingTapes = { 16, 22 }
   local fishingTapes = { 1, 4, 10 }
-
-  -- Make all tapes appear on Zombie Corpses (rarely)
-  -- make sure "junk" exists on inventorymale/female
-  distributionTable = {
-    ["all"] = {
-      ["inventorymale"] = {
-        junk = {
-          rolls = 1,
-          items = {}
-        }
-      },
-      ["inventoryfemale"] = {
-        junk = {
-          rolls = 1,
-          items = {}
-        }
-      }
-    }
-  }
   
-  insertByDottedKey("all.inventorymale.junk.items", 0.00001)
-  insertByDottedKey("all.inventoryfemale.junk.items", 0.00001)
+  -- Make tapes appear in Bags carried by Zombies
+  insertByDottedKey("Bag_Schoolbag.items", 0.5)
+  insertByDottedKey("Bag_DuffelBag.items", 0.7)
+  insertByDottedKey("Bag_DuffelBagTINT.items", 0.7)
+  insertByDottedKey("Bag_NormalHikingBag.items", 1)
+  insertByDottedKey("Bag_BigHikingBag.items", 2)
+  insertByDottedKey("Bag_SurvivorBag.items", 5)
+  
+  -- Self storage garages should have all tapes (non-procedural, still):
   insertByDottedKey("storageunit.all.items", 1)
   
   -- Make all tapes appear in these procedural loot lists:
