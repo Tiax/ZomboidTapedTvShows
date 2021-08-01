@@ -61,7 +61,10 @@ local function preDistributionMerge()
   insertByDottedKey("Bag_DuffelBagTINT.items", 0.7)
   insertByDottedKey("Bag_NormalHikingBag.items", 1)
   insertByDottedKey("Bag_BigHikingBag.items", 2)
-  insertByDottedKey("Bag_SurvivorBag.items", 5)
+  insertByDottedKey("Bag_SurvivorBag.items", 4)
+  
+  insertByDottedKey("Bag_ALICEpack.items", 2)
+  distributionTable["Bag_ALICEpack"].rolls = 2
   
   -- Self storage garages should have all tapes (non-procedural, still):
   insertByDottedKey("storageunit.all.items", 1)
