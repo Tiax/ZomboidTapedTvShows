@@ -2,3 +2,5 @@ name=Taped TV shows
 id=TapedTvShows
 description=Adds video tapes of your favourite TV show broadcasts. This will allow you to still get the XP gain after TV broadcasts stopped.
 poster=poster.png
+versionMin=41.00
+versionMax=41.54

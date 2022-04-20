@@ -1,6 +1,11 @@
 version=1
 id=2284317690
 title=Taped TV Shows
+description=[B]Now obsolete:[/b] this functionality is now part of the vanilla game, as of 41.54!
+description=I'm leaving this online for people still playing older saves on older builds - don't expect this to work on the latest version, anymore - it's redundant anyway!
+description=
+description=--------
+description=
 description=If you're tired of starting out games as a couch potato, always near a TV to not miss those juicy XP points, then this may be the mod you're looking for!
 description=
 description=Video tapes of your favourite 25 TV show episodes can now be randomly found in certain locations, there's also a rare chance to get them as loot from Zombies. Just slide them into any VHS-compatible TV (sorry Antique Television, you had it coming!) and enjoy the shows "on-demand" from your collection, including any skill XP gain, stress and boredom reduction that come from it. Thanks to the power of lazy developers, you don't even need to rewind tapes!
